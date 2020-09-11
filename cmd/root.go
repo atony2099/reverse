@@ -20,7 +20,7 @@ var (
 	rootCmd = &cobra.Command{
 		Version: Version,
 		Use:     "reverse",
-		Short:   "Reverse is a database reverse command line tool",
+		Short:   "Reverse is a database reverse command line tool aa",
 		Long:    `A flexsible and powerful command line tool to generate codes/docs from databases(SQLITE/Mysql/Postgres/MSSQL)`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if versionFlag != nil && *versionFlag {
