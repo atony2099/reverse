@@ -1,2 +1,4 @@
 reverse
 models/
+tmp/
+.idea/

@@ -10,9 +10,11 @@ import (
 	"go/format"
 	"html/template"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 
+	"github.com/iancoleman/strcase"
 	"xorm.io/xorm/schemas"
 )
 
@@ -136,6 +138,11 @@ func typestring(col *schemas.Column) string {
 	if s == "[]uint8" {
 		return "[]byte"
 	}
+
+	if strings.ToUpper(st.Name) == "DECIMAL" {
+		return reflect.TypeOf(float64(1)).String()
+	}
+
 	return s
 }
 
@@ -144,6 +151,16 @@ func tag(table *schemas.Table, col *schemas.Column) template.HTML {
 	isIdPk := isNameId && typestring(col) == "int64"
 
 	var res []string
+
+	// 1. add json
+	snakeStr := strcase.ToSnake(col.FieldName)
+
+	// 1. check if contain number
+	match, _ := regexp.MatchString(`\d+`, col.FieldName)
+	if match {
+		res = append(res, snakeStr)
+	}
+
 	if !col.Nullable {
 		if !isIdPk {
 			res = append(res, "not null")
@@ -235,7 +252,7 @@ func tag(table *schemas.Table, col *schemas.Column) template.HTML {
 	}
 	res = append(res, nstr)
 	if len(res) > 0 {
-		return template.HTML(fmt.Sprintf(`xorm:"%s"`, strings.Join(res, " ")))
+		return template.HTML(fmt.Sprintf(`json:"%s" xorm:"%s"`, snakeStr, strings.Join(res, " ")))
 	}
 	return ""
 }

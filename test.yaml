@@ -1,0 +1,8 @@
+source:
+  database: mysql
+  conn_str: 'root:123456@/xorm_t?charset=utf8mb4'
+targets:
+  - type: codes
+    language: golang
+    output_dir: ./tmp
+    multiple_files: true
